@@ -110,7 +110,7 @@ def crop_from_r_b(source_folder, max_width=800, max_height=450):
                     print(f'Failed to convert {file_path}: {e}')    
 
 if __name__ == "__main__":
-    # resize_and_convert_images("netzz/resize")
+    resize_and_convert_images("netzz/resize")
     # crop_from_l_t_r_b(source_folder)
-    crop_from_r_b("netzz/crop_from_r_b")
+    # crop_from_r_b("netzz/crop_from_r_b")
 
