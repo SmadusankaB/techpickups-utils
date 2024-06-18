@@ -49,7 +49,7 @@ def fill_and_resize_images_with_background(source_folder, max_width=800, max_hei
 
 
 if __name__ == "__main__":
-    fill_and_resize_images_with_background("netzz/graphics")
+    fill_and_resize_images_with_background("netzz/resize")
     # crop_from_l_t_r_b(source_folder)
     # crop_from_r_b("netzz/crop_from_r_b")
 
