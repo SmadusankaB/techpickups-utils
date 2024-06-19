@@ -1,5 +1,6 @@
 import os
 from PIL import Image
+import shutil
 
 def resize_and_convert_images(source_folder, max_width=800, max_height=450):
     for root, dirs, files in os.walk(source_folder):
@@ -75,22 +76,27 @@ def fill_and_resize_images_with_background(source_folder, max_width=800, max_hei
                 except Exception as e:
                     print(f'Failed to convert {file_path}: {e}')
 
-def fill_and_resize_images_with_background(source_folder, max_width=800, max_height=450, background_color=(240, 240, 240)):
+def fill_and_resize_images_with_background(source_folder, dest_folder, max_width=800, max_height=450, background_color=(240, 240, 240)):
     """
     This function resizes and pads an image to fit within 800 x 450 pixels, maintaining aspect ratio.
     It adds padding with the specified background color to meet the max dimensions if needed.
     If the image is already 800x450 or 450x800, it only converts the image to WebP format.
+    The generated WebP images are then moved to the specified destination folder.
     """
+    if not os.path.exists(dest_folder):
+        os.makedirs(dest_folder)
+
     for root, dirs, files in os.walk(source_folder):
         for file in files:
             if file.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')):
                 file_path = os.path.join(root, file)
                 webp_file_path = os.path.splitext(file_path)[0] + '.webp'
+                dest_file_path = os.path.join(dest_folder, os.path.basename(webp_file_path))
                 try:
                     with Image.open(file_path) as img:
                         # Check if the image is already 800x450 or 450x800
                         if (img.width == max_width and img.height == max_height) or \
-                           (img.width == max_height and img.height == max_width):
+                        (img.width == max_height and img.height == max_width):
                             # Just convert to WebP
                             img.save(webp_file_path, 'webp', optimize=True, quality=85)
                         else:
@@ -118,9 +124,11 @@ def fill_and_resize_images_with_background(source_folder, max_width=800, max_hei
                             new_img.paste(img.convert('RGB'), (paste_x, paste_y))
 
                             # Save the image as WebP
-                            new_img.save(webp_file_path, 'webp', optimize=True, quality=95)
+                            new_img.save(webp_file_path, 'webp', optimize=True, quality=85)
 
-                    print(f'Converted and resized {file_path} to {webp_file_path}')
+                    # Move the WebP file to the destination folder
+                    shutil.move(webp_file_path, dest_file_path)
+                    print(f'Converted and moved {file_path} to {dest_file_path}')
                 except Exception as e:
                     print(f'Failed to convert {file_path}: {e}')
 
@@ -128,5 +136,5 @@ def fill_and_resize_images_with_background(source_folder, max_width=800, max_hei
 if __name__ == "__main__":
     # fill_and_resize_images_with_background("netzz/resize")
     # resize_and_convert_images("netzz/just_resize")
-    fill_and_resize_images_with_background("netzz/fill")
+    fill_and_resize_images_with_background("netzz/fill", "netzz/just_resize", max_width=800, max_height=450, background_color=(240, 240, 240))
 
